@@ -35,7 +35,6 @@
 #include "mpu6050.h"
 
 
-const uint16_t i2c_timeout = 100;
 const double Accel_Z_corrector = 14418.0;
 
 uint32_t timer;
@@ -79,6 +78,10 @@ uint8_t MPU6050_Init(I2C_HandleTypeDef *I2Cx)
         // XG_ST=0,YG_ST=0,ZG_ST=0, FS_SEL=0 -> � 250 �/s
         Data = 0x00;
         HAL_I2C_Mem_Write(I2Cx, MPU6050_ADDR, GYRO_CONFIG_REG, 1, &Data, 1, i2c_timeout);
+			
+        // Set Interupt pin
+        Data = 0x01;
+        HAL_I2C_Mem_Write(I2Cx, MPU6050_ADDR, INT_ENABLE, 1, &Data, 1, i2c_timeout);
         return 0;
     }
     return 1;
@@ -141,19 +144,26 @@ void MPU6050_Read_Temp(I2C_HandleTypeDef *I2Cx, MPU6050_t *DataStruct)
     DataStruct->Temperature = (float)((int16_t)temp / (float)340.0 + (float)36.53);
 }
 
+
+
 void MPU6050_Read_All(I2C_HandleTypeDef *I2Cx, MPU6050_t *DataStruct)
 {
-    uint8_t Rec_Data[14];
-    int16_t temp;
+	uint8_t Rec_Data[14];
+  HAL_I2C_Mem_Read(I2Cx, MPU6050_ADDR, ACCEL_XOUT_H_REG, 1, Rec_Data, 14, i2c_timeout);
+	MPU6050_Process_All(Rec_Data, DataStruct);
+}
+
+
+void MPU6050_Process_All(uint8_t* Rec_Data, MPU6050_t *DataStruct)
+{
 
     // Read 14 BYTES of data starting from ACCEL_XOUT_H register
 
-    HAL_I2C_Mem_Read(I2Cx, MPU6050_ADDR, ACCEL_XOUT_H_REG, 1, Rec_Data, 14, i2c_timeout);
 
     DataStruct->Accel_X_RAW = (int16_t)(Rec_Data[0] << 8 | Rec_Data[1]);
     DataStruct->Accel_Y_RAW = (int16_t)(Rec_Data[2] << 8 | Rec_Data[3]);
     DataStruct->Accel_Z_RAW = (int16_t)(Rec_Data[4] << 8 | Rec_Data[5]);
-    temp = (int16_t)(Rec_Data[6] << 8 | Rec_Data[7]);
+    int16_t temp = (int16_t)(Rec_Data[6] << 8 | Rec_Data[7]);
     DataStruct->Gyro_X_RAW = (int16_t)(Rec_Data[8] << 8 | Rec_Data[9]);
     DataStruct->Gyro_Y_RAW = (int16_t)(Rec_Data[10] << 8 | Rec_Data[11]);
     DataStruct->Gyro_Z_RAW = (int16_t)(Rec_Data[12] << 8 | Rec_Data[13]);

@@ -62,8 +62,16 @@ void SystemClock_Config(void);
 
 	uint8_t BootHeader[] ={"Booted"};
 	
-  uint8_t Rec_Data[6];
-const uint16_t i2c_timeout = 100;
+	MPU6050_t boardGyro;
+  uint8_t Rec_Data[14];
+	uint8_t gyroFlag=0;
+	
+	
+	
+	
+	
+	
+//const uint16_t i2c_timeout = 100;
 /* USER CODE END 0 */
 
 /**
@@ -102,7 +110,10 @@ int main(void)
 
 	while (MPU6050_Init(&hi2c1) == 1);
 	HAL_UART_Transmit(&huart4,BootHeader,sizeof(BootHeader),1000);
-	HAL_I2C_Master_Receive_DMA(&hi2c1,MPU6050_ADDR, ACCEL_XOUT_H_REG, 1, Rec_Data, 6, i2c_timeout);
+	
+	//HAL_I2C_Mem_Read_DMA
+	//HAL_I2C_Master_Receive_DMA
+	//HAL_I2C_Master_Receive_DMA(&hi2c1,MPU6050_ADDR, ACCEL_XOUT_H_REG, 1, Rec_Data, 6, i2c_timeout);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -168,6 +179,19 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	gyroFlag=1;
+	if(GPIO_Pin == GPIO_PIN_8)
+	{
+				gyroFlag=3;
+		//HAL_I2C_Master_Receive(&hi2c1,MPU6050_ADDR,Rec_Data,14,i2c_timeout);
+		MPU6050_Read_All(&hi2c1,&boardGyro);
+		gyroFlag=0;
+    //HAL_I2C_Mem_Read(I2Cx, MPU6050_ADDR, ACCEL_XOUT_H_REG, 1, Rec_Data, 14, i2c_timeout);
+	}
+		
+}
 /* USER CODE END 4 */
 
 /**
