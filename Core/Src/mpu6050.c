@@ -65,6 +65,10 @@ uint8_t MPU6050_Init(I2C_HandleTypeDef *I2Cx)
         Data = 0;
         HAL_I2C_Mem_Write(I2Cx, MPU6050_ADDR, PWR_MGMT_1_REG, 1, &Data, 1, i2c_timeout);
 
+        // Set Digital Low Pass Filter to sample below 1Kh
+        Data = 0x01;
+        HAL_I2C_Mem_Write(I2Cx, MPU6050_ADDR, DLPF_ENABLE, 1, &Data, 1, i2c_timeout);
+			
         // Set DATA RATE of 1KHz by writing SMPLRT_DIV register
         Data = 0x07;
         HAL_I2C_Mem_Write(I2Cx, MPU6050_ADDR, SMPLRT_DIV_REG, 1, &Data, 1, i2c_timeout);
@@ -149,7 +153,9 @@ void MPU6050_Read_Temp(I2C_HandleTypeDef *I2Cx, MPU6050_t *DataStruct)
 void MPU6050_Read_All(I2C_HandleTypeDef *I2Cx, MPU6050_t *DataStruct)
 {
 	uint8_t Rec_Data[14];
-  HAL_I2C_Mem_Read(I2Cx, MPU6050_ADDR, ACCEL_XOUT_H_REG, 1, Rec_Data, 14, i2c_timeout);
+	//HAL_I2C_Mem_Read_DMA(I2Cx, MPU6050_ADDR, ACCEL_XOUT_H_REG, 1, Rec_Data, 14);
+	HAL_I2C_Mem_Read(I2Cx, MPU6050_ADDR, ACCEL_XOUT_H_REG, 1, Rec_Data, 14, i2c_timeout);
+	//HAL_I2C_Master_Receive(I2C_HandleTypeDef *I2Cx, uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t Timeout);
 	MPU6050_Process_All(Rec_Data, DataStruct);
 }
 

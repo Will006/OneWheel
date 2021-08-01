@@ -23,6 +23,8 @@
 #define GYRO_CONFIG_REG 0x1B
 #define GYRO_XOUT_H_REG 0x43
 #define INT_ENABLE 0x38
+//Digital Low Pass Filter (DLPF)
+#define DLPF_ENABLE 0x1A
 #define i2c_timeout 100
 
 // Setup MPU6050

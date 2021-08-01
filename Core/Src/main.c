@@ -181,13 +181,15 @@ void SystemClock_Config(void)
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	gyroFlag=1;
 	if(GPIO_Pin == GPIO_PIN_8)
 	{
-				gyroFlag=3;
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
 		//HAL_I2C_Master_Receive(&hi2c1,MPU6050_ADDR,Rec_Data,14,i2c_timeout);
 		MPU6050_Read_All(&hi2c1,&boardGyro);
-		gyroFlag=0;
+		//HAL_I2C_Master_Receive(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+		//HAL_I2C_Slave_Receive(I2C_HandleTypeDef *hi2c, uint8_t *pData, uint16_t Size, uint32_t Timeout);
+
+		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_RESET);
     //HAL_I2C_Mem_Read(I2Cx, MPU6050_ADDR, ACCEL_XOUT_H_REG, 1, Rec_Data, 14, i2c_timeout);
 	}
 		
