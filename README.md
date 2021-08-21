@@ -1,6 +1,6 @@
 # OneWheel
 Implemention of a OneWheel  
-Gyro Connection:  
+Gyro (MPU6050) Connection:  
   VDD -> 3V3  
   GND -> GND  
   SCL -> B6  
