@@ -1,6 +1,5 @@
 --cpu=Cortex-M4.fp.sp
 "onewheel\startup_stm32f446xx.o"
-"onewheel\mpu6050.o"
 "onewheel\main.o"
 "onewheel\gpio.o"
 "onewheel\dac.o"

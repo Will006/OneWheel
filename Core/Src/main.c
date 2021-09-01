@@ -25,10 +25,13 @@
 #include "usart.h"
 #include "gpio.h"
 
+#include "I2Cdev.h"
+
+#include "MPU6050_6Axis_MotionApps_V6_12.h"
+
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
-#include "mpu6050.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -62,7 +65,7 @@ void SystemClock_Config(void);
 
 	uint8_t BootHeader[] ={"Booted"};
 	
-	MPU6050_t boardGyro;
+	//MPU6050_t boardGyro;
   uint8_t Rec_Data[14];
 	uint8_t gyroFlag=0;
 	
@@ -108,7 +111,7 @@ int main(void)
   MX_DAC_Init();
   /* USER CODE BEGIN 2 */
 
-	while (MPU6050_Init(&hi2c1) == 1);
+	//while (MPU6050_Init(&hi2c1) == 1);
 	HAL_UART_Transmit(&huart4,BootHeader,sizeof(BootHeader),1000);
 	
 	//HAL_I2C_Mem_Read_DMA
@@ -185,7 +188,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 	{
 		HAL_GPIO_WritePin(GPIOD, GPIO_PIN_10, GPIO_PIN_SET);
 		//HAL_I2C_Master_Receive(&hi2c1,MPU6050_ADDR,Rec_Data,14,i2c_timeout);
-		MPU6050_Read_All(&hi2c1,&boardGyro);
+		//MPU6050_Read_All(&hi2c1,&boardGyro);
 		//HAL_I2C_Master_Receive(I2C_HandleTypeDef *hi2c, uint16_t DevAddress, uint8_t *pData, uint16_t Size, uint32_t Timeout);
 		//HAL_I2C_Slave_Receive(I2C_HandleTypeDef *hi2c, uint8_t *pData, uint16_t Size, uint32_t Timeout);
 
